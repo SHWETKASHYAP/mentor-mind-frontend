@@ -12,134 +12,309 @@ export default function StudyPlanView({ subjectsCount }) {
 
   const generatePlan = async () => {
     if (subjectsCount === 0) {
-    alert("Please add at least one subject before generating a study plan.");
-    setPlans([]);
-    return;
-  }
+      alert("Please add at least one subject before generating a study plan.");
+      setPlans([]);
+      return;
+    }
 
     try {
       setLoading(true);
       await api.post("/ai/study-plan");
       const updatedPlans = await fetchPlans();
       setPlans(updatedPlans);
-    } catch(err){
-      console.error("Plan generation failed", err);
-    }
-    finally {
+    } catch (err) {
+      console.error(err);
+    } finally {
       setLoading(false);
     }
   };
 
-  const today = new Date().toISOString().split("T")[0];
-
-  /* ================= EMPTY STATE ================= */
   if (!plans.length) {
     return (
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 w-6/12 ml-72">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 w-8/12 mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-lg font-semibold text-purple-400">
-            AI Study Plan
-          </h3>
+          <h2 className="text-xl font-semibold text-purple-400">
+            AI Study Planner
+          </h2>
 
           <button
             onClick={generatePlan}
             disabled={loading}
-            className={`px-4 py-2 rounded text-sm transition ${
-              loading
-                ? "bg-slate-700 text-slate-400 cursor-not-allowed"
-                : "bg-purple-600 hover:bg-purple-700 text-white"
-            }`}
+            className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded text-white"
           >
             {loading ? "Generating..." : "Generate Plan"}
           </button>
         </div>
 
-        {loading && (
-          <p className="text-sm text-slate-400 mb-4">
-            Generating your AI study plan...
-          </p>
-        )}
-
-        <p className="text-sm text-slate-400">
-          No study plan generated yet. Click{" "}
-          <span className="text-purple-400">Generate Plan</span>{" "}
-          to let AI create one for you.
+        <p className="text-slate-400">
+          No study plan generated yet.
         </p>
       </div>
     );
   }
 
-  /* ================= PLAN VIEW ================= */
   const latestPlan = plans[0];
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 w-6/12 ml-72">
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-semibold text-purple-400">
-          AI Study Plan
-        </h3>
+    <div className="w-10/12 mx-auto space-y-8">
 
-        <button
-          onClick={generatePlan}
-          disabled={loading}
-          className={`px-4 py-2 rounded text-sm transition ${
-            loading
-              ? "bg-slate-700 text-slate-400 cursor-not-allowed"
-              : "bg-purple-600 hover:bg-purple-700 text-white"
-          }`}
-        >
-          {loading ? "Generating..." : "Regenerate Plan"}
-        </button>
+      {/* Header */}
+
+      <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
+
+        <div className="flex justify-between items-center">
+
+          <div>
+            <h2 className="text-2xl font-bold text-purple-400">
+              AI Study Planner
+            </h2>
+
+            <p className="text-slate-400 mt-2">
+              {latestPlan.summary}
+            </p>
+          </div>
+
+          <button
+            onClick={generatePlan}
+            disabled={loading}
+            className="bg-purple-600 hover:bg-purple-700 px-5 py-2 rounded text-white"
+          >
+            {loading ? "Generating..." : "Regenerate"}
+          </button>
+
+        </div>
+
       </div>
 
-      {loading && (
-        <p className="text-sm text-slate-400 mb-4">
-          Regenerating your AI study plan...
-        </p>
+      {/* Overall Tips */}
+
+      {latestPlan.overallTips && (
+
+        <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
+
+          <h3 className="text-lg font-semibold text-yellow-400 mb-4">
+            💡 Overall Tips
+          </h3>
+
+          <ul className="space-y-2">
+
+            {latestPlan.overallTips.map((tip, index) => (
+
+              <li
+                key={index}
+                className="text-slate-300"
+              >
+                • {tip}
+              </li>
+
+            ))}
+
+          </ul>
+
+        </div>
+
       )}
 
-      <div className="space-y-6">
-        {latestPlan.plan.map((day, i) => (
-          <div
-            key={i}
-            className={`rounded-lg p-4 border ${
-              day.date === today
-                ? "bg-indigo-900/40 border-indigo-500"
-                : "bg-slate-800 border-slate-700"
-            }`}
-          >
-            <h4 className="text-indigo-300 font-semibold mb-3">
-              {day.date}
-              {day.date === today && (
-                <span className="ml-2 text-xs text-indigo-400">
-                  (Today)
-                </span>
-              )}
+      {/* Days */}
+
+      {latestPlan.plan.map((day, index) => (
+
+        <div
+          key={index}
+          className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden"
+        >
+
+          {/* Day Header */}
+
+          <div className="bg-slate-800 p-5 flex justify-between items-center">
+
+            <div>
+
+              <h3 className="text-xl font-semibold text-indigo-400">
+                📅 {day.day} • {day.date}
+              </h3>
+
+              <p className="text-sm text-slate-400 mt-1">
+                ⏱ {day.totalHours} Hours Planned
+              </p>
+
+            </div>
+
+            <div className="text-right">
+
+              <p className="text-yellow-300 italic">
+                "{day.motivation}"
+              </p>
+
+            </div>
+
+          </div>
+
+          {/* Sessions */}
+
+          <div className="p-6">
+
+            <h4 className="text-purple-400 font-semibold mb-4">
+              📚 Study Sessions
             </h4>
 
-            <div className="space-y-2">
-              {day.sessions.map((s, j) => (
+            <div className="space-y-4">
+
+              {day.sessions.map((session, i) => (
+
                 <div
-                  key={j}
-                  className="flex justify-between items-center text-sm bg-slate-900 rounded px-3 py-2"
+                  key={i}
+                  className="bg-slate-800 rounded-lg p-5 border border-slate-700"
                 >
-                  <span className="text-slate-100">
-                    {s.subject}
-                  </span>
 
-                  <span className="text-slate-400">
-                    {s.hours}h
-                  </span>
+                  <div className="flex justify-between">
 
-                  <span className="text-slate-500 text-xs">
-                    {s.focus}
-                  </span>
+                    <h5 className="text-lg text-white font-semibold">
+                      {session.subject}
+                    </h5>
+
+                    <span className="text-emerald-400">
+                      {session.hours} hrs
+                    </span>
+
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mt-4 text-sm">
+
+                    <div>
+                      <span className="text-slate-500">
+                        Topic
+                      </span>
+
+                      <p className="text-slate-200">
+                        {session.topic}
+                      </p>
+                    </div>
+
+                    <div>
+                      <span className="text-slate-500">
+                        Goal
+                      </span>
+
+                      <p className="text-slate-200">
+                        {session.goal}
+                      </p>
+                    </div>
+
+                    <div>
+                      <span className="text-slate-500">
+                        Focus
+                      </span>
+
+                      <p className="text-slate-200">
+                        {session.focus}
+                      </p>
+                    </div>
+
+                    <div>
+                      <span className="text-slate-500">
+                        Break
+                      </span>
+
+                      <p className="text-slate-200">
+                        {session.breakAfter}
+                      </p>
+                    </div>
+
+                  </div>
+
+                  <div className="mt-4">
+
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs ${
+                        session.priority === "High"
+                          ? "bg-red-600"
+                          : session.priority === "Medium"
+                          ? "bg-yellow-600"
+                          : "bg-green-600"
+                      }`}
+                    >
+                      {session.priority} Priority
+                    </span>
+
+                  </div>
+
                 </div>
+
               ))}
+
             </div>
+
+            {/* Revision */}
+
+            {day.revision?.length > 0 && (
+
+              <div className="mt-8">
+
+                <h4 className="text-indigo-400 font-semibold mb-3">
+                  🔁 Revision
+                </h4>
+
+                <ul className="space-y-2">
+
+                  {day.revision.map((r, i) => (
+
+                    <li
+                      key={i}
+                      className="text-slate-300"
+                    >
+                      ✓ {r}
+                    </li>
+
+                  ))}
+
+                </ul>
+
+              </div>
+
+            )}
+
+            {/* Tasks */}
+
+            {day.tasks?.length > 0 && (
+
+              <div className="mt-8">
+
+                <h4 className="text-emerald-400 font-semibold mb-3">
+                  ✅ Daily Tasks
+                </h4>
+
+                <div className="space-y-2">
+
+                  {day.tasks.map((task, i) => (
+
+                    <label
+                      key={i}
+                      className="flex items-center gap-3 text-slate-300"
+                    >
+                      <input
+                        type="checkbox"
+                        className="accent-purple-500"
+                      />
+
+                      {task}
+
+                    </label>
+
+                  ))}
+
+                </div>
+
+              </div>
+
+            )}
+
           </div>
-        ))}
-      </div>
+
+        </div>
+
+      ))}
+
     </div>
   );
 }
