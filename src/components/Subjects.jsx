@@ -8,13 +8,13 @@ export default function Subjects({ onCountChange }) {
 
   const [form, setForm] = useState({
     name: "",
-    difficulty: "medium",
+    difficulty: "",
     examDate: "",
   });
 
   const [editData, setEditData] = useState({
     name: "",
-    difficulty: "medium",
+    difficulty: "",
     examDate: "",
   });
 
@@ -131,33 +131,42 @@ export default function Subjects({ onCountChange }) {
           required
         />
 
-        <select
-          className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white"
-          value={form.difficulty}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              difficulty: e.target.value,
-            })
-          }
-        >
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </select>
+        <div>
+  <label className="block text-sm font-medium text-slate-300 mb-2">
+    Difficulty
+  </label>
 
-        <input
-          type="date"
-          className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white"
-          value={form.examDate}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              examDate: e.target.value,
-            })
-          }
-          required
-        />
+  <select
+    className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+    value={form.difficulty}
+    onChange={(e) =>
+      setForm({ ...form, difficulty: e.target.value })
+    }
+  >
+    <option value="" disabled>
+      Select Difficulty
+    </option>
+    <option value="easy">Easy</option>
+    <option value="medium">Medium</option>
+    <option value="hard">Hard</option>
+  </select>
+</div>
+
+        <div>
+  <label className="block text-sm font-medium text-slate-300 mb-2">
+    Exam Date
+  </label>
+
+  <input
+    type="date"
+    className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+    value={form.examDate}
+    onChange={(e) =>
+      setForm({ ...form, examDate: e.target.value })
+    }
+    required
+  />
+</div>
 
         <button className="w-full bg-indigo-600 hover:bg-indigo-700 py-2 rounded-lg text-white transition">
           + Add Subject
