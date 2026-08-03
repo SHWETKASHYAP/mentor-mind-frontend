@@ -10,7 +10,7 @@ export default function DashboardLayout({ children }) {
           </h1>
 
           <span className="text-sm text-slate-400">
-            AI Study Planner
+            AI Exams Planner
           </span>
         </div>
       </header>
