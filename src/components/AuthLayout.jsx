@@ -9,6 +9,7 @@ export default function AuthLayout({
   formSubtitle,
   error,
   children,
+  googleButton,
   footer,
 }) {
   return (
@@ -76,6 +77,8 @@ export default function AuthLayout({
                 <span className="px-4 text-slate-500 text-sm">OR</span>
                 <div className="flex-1 h-px bg-slate-700"></div>
               </div>
+
+              {googleButton}
 
               {footer}
             </div>

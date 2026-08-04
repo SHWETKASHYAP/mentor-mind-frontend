@@ -7,6 +7,7 @@ import AuthLayout from "../components/AuthLayout";
 import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
 import SubmitButton from "../components/SubmitButton";
+import GoogleAuthButton from "../components/GoogleAuthButton";
 
 const features = [
   {
@@ -54,6 +55,7 @@ export default function Signup() {
       formTitle="Create Account"
       formSubtitle="Start your AI-powered study journey today."
       error={error}
+      googleButton={<GoogleAuthButton setError={setError} />}
       footer={
         <p className="text-center text-slate-400">
           Already have an account?{" "}

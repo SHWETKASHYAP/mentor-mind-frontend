@@ -7,6 +7,7 @@ import AuthLayout from "../components/AuthLayout";
 import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
 import SubmitButton from "../components/SubmitButton";
+import GoogleAuthButton from "../components/GoogleAuthButton";
 
 const features = [
   {
@@ -56,6 +57,7 @@ export default function Login() {
       formTitle="Welcome Back"
       formSubtitle="Sign in to continue your learning journey."
       error={error}
+      googleButton={<GoogleAuthButton setError={setError} />}
       footer={
         <p className="text-center text-slate-400">
           Don't have an account?{" "}
