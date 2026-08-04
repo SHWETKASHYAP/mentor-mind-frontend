@@ -77,7 +77,7 @@ export default function Dashboard() {
             </h1>
 
             <p className="text-slate-400 mt-2">
-              Stay consistent and let AI guide your preparation.
+              Stay consistent and let AI guide your exam preparation.
             </p>
 
           </div>
